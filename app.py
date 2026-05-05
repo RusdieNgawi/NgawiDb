@@ -22,7 +22,7 @@ MOVIES = [
         "rating": "7.5", 
         "genre": "Legal Drama", 
         "image": "1000168965.png", 
-        "description": "Perdebatan sengit di meja hijau mengenai hak asasi para penganut aliran 'Hitam' di mata hukum negara." 
+        "description": "Seseorang bernama Reza sedang makan malam bersama di restoran,tetapi terjadi sedikit adu mulut lah lalu suaminya ladesh pergi ke wc. tetapi setelah sekian lama menunggu ladesh akhirnya reza menyusul ke wc menemukan ladesh telah mati di tusuk boolnya." 
     }
     # Film lainnya akan dirender melalui list tabel di frontend
 ]

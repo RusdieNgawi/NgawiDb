@@ -1,0 +1,323 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NgawiDb — Platform Film Utama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #121212; 
+            --card-bg: #1a1a1a;
+            --border: rgba(255, 255, 255, 0.05);
+            --blue-glow: #3b82f6;
+            --gold: #fbbf24;
+        }
+        body {
+            background-color: var(--bg);
+            color: #a1a1aa;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3 { color: #fff; font-weight: 700; }
+        
+        .glow-text {
+            color: #fff;
+            text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reveal {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .reveal-delay-1 { animation-delay: 0.2s; }
+        .reveal-delay-2 { animation-delay: 0.4s; }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .table-row-hover {
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .table-row-hover:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Modal Overlay */
+        #detail-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #181818;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 700px;
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        .star-icon { color: var(--gold); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Modal Detail -->
+    <div id="detail-overlay" class="flex items-center justify-center">
+        <div class="modal-content relative animate-in fade-in zoom-in duration-300">
+            <button onclick="closeDetail()" class="absolute top-5 right-5 text-white/30 hover:text-white z-20 transition-colors uppercase text-[10px] tracking-widest font-bold">Tutup</button>
+            <div class="grid md:grid-cols-2 gap-0">
+                <div id="modal-img-container" class="bg-black flex items-center justify-center overflow-hidden h-[250px] md:h-auto">
+                    <img id="modal-img" src="" alt="" class="w-full h-full object-cover">
+                </div>
+                <div class="p-8 flex flex-col justify-center bg-[#181818]">
+                    <span id="modal-year" class="text-[9px] font-bold text-white/20 tracking-[3px] mb-3 uppercase"></span>
+                    <h2 id="modal-title" class="text-2xl font-bold mb-3 text-white tracking-tight"></h2>
+                    <p id="modal-genre" class="text-[10px] uppercase tracking-widest text-blue-500 mb-4 font-bold"></p>
+                    <p id="modal-desc" class="text-gray-400 text-sm leading-relaxed mb-6 font-light italic"></p>
+                    <div id="modal-rating-container" class="flex items-center gap-2">
+                        <svg class="w-5 h-5 star-icon fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <span id="modal-rating" class="text-2xl font-black"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 py-6 px-10 flex justify-between items-center backdrop-blur-md bg-[#121212]/80 border-b border-white/5">
+        <div class="text-lg font-extrabold tracking-tighter text-white">NGAWIDB</div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-40 pb-16 px-6 text-center max-w-4xl mx-auto">
+        <h1 class="text-6xl md:text-8xl font-extrabold tracking-tight mb-6 reveal">NgawiDb</h1>
+        <p class="text-lg md:text-xl font-medium leading-relaxed reveal reveal-delay-1 text-gray-400">
+            Platform film nomor satu di Ngawi dengan database terlengkap untuk hiburan Anda.
+        </p>
+    </header>
+
+    <!-- Featured -->
+    <section class="px-6 mb-16 reveal reveal-delay-2">
+        <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-6" id="featured-grid"></div>
+    </section>
+
+    <!-- Arsip Utama -->
+    <section class="px-6 mb-20 reveal reveal-delay-2">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-6 px-2">
+                <h2 class="text-2xl font-bold">List Film Sudah Tayang</h2>
+            </div>
+
+            <div class="glass-card overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-[10px] uppercase tracking-widest text-white/40 border-b border-white/5">
+                            <th class="py-5 px-8">Judul Film</th>
+                            <th class="py-5 px-8 text-center">Tahun</th>
+                            <th class="py-5 px-8 text-right">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="movie-table-body" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon -->
+    <section class="px-6 pb-40 reveal reveal-delay-2">
+        <div class="max-w-5xl mx-auto">
+            <div class="mb-6 px-2">
+                <h2 class="text-2xl font-bold text-blue-500">Coming Soon</h2>
+                <p class="text-xs uppercase tracking-widest text-white/30 font-semibold mt-1">Proyek Mendatang</p>
+            </div>
+
+            <div class="glass-card overflow-hidden border-blue-500/20">
+                <table class="w-full text-left">
+                    <tbody id="coming-soon-body" class="divide-y divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const MOVIES = [
+            {title: "Ladesh: Suami dari Masa Depan", year: "2025", rating: "8.2", genre: "Sci-Fi / Drama Romantis", image: "1000168964.png", desc: "Seorang pria dari masa depan kembali ke Ngawi tahun 2025 untuk mencegah suaminya meninggal."},
+            {title: "Jangan Bawa Aku!: Pesukian Massal", year: "2026", rating: "8.1", genre: "Tragedi / Psychological Horror", desc: "Kisah pilu para Jomokers yang diculik dan dipaksa menjalani ritual pembersihan identitas oleh kelompok radikal."},
+            {title: "(500) Days Of Imut", year: "2009", rating: "8.0", genre: "Romance / Coming-of-Age", desc: "Memoar 500 hari perjalanan cinta seorang pemuda dengan sosok ikonik bernama Imut yang berakhir penuh pelajaran hidup."},
+            {title: "Zona Hitam", year: "2026", rating: "7.9", genre: "Action / Survival Horror", desc: "Ngawi diisolasi setelah wabah misterius mengubah penduduknya menjadi entitas agresif."},
+            {title: "Pesan Perang: Antara Jomok dan Suki", year: "TBA", rating: "7.9", genre: "War / Epic", desc: "Dokumentasi besar tentang konflik perebutan wilayah kekuasaan dan ideologi antara faksi Hitam dan faksi Putih."},
+            {title: "Kehitaman 2: The Verdict", year: "2026", rating: "7.8", genre: "Legal Thriller / Crime", desc: "Kelanjutan persidangan paling kontroversial yang mengungkap keterlibatan pejabat tinggi dengan drama penyandraan diruang sidang."},
+            {title: "Pengepungan Di Bukit Ngawi", year: "TBA", rating: "7.7", genre: "War Drama / Art-house", desc: "Sebuah metafora perjuangan sepi lima prajurit terakhir yang bertahan di atas bukit saat dikhianati."},
+            {title: "Agak Ngawi 2: Menyala Boolku", year: "2025", rating: "7.6", genre: "Comedy / Adventure", desc: "Empat sekawan kembali dengan bisnis baru yang lebih absurd berhadapan dengan masalah pencernaan mistis."},
+            {title: "Kehitaman: The Verdict", year: "2025", rating: "7.5", genre: "Legal Drama", image: "1000168965.png", desc: "Perdebatan sengit di meja hijau mengenai hak asasi para penganut aliran 'Hitam' di mata hukum negara."},
+            {title: "Another Life: Adriana", year: "TBA", rating: "7.5", genre: "Biopic / Melodrama", desc: "Mengungkap masa lalu kelam Adriana sebelum menjadi pemilik Barbershop."},
+            {title: "Kutukan Hitam: The Black Conjuring", year: "2026", rating: "7.5", genre: "Supernatural Horror", desc: "Keluarga pindah ke rumah tua pinggiran Jomokerto yang ternyata bekas tempat pemujaan kuno."},
+            {title: "Para Perodok", year: "2026", rating: "7.4", genre: "Action / Heist", desc: "Sekelompok pemuda ahli menyusun rencana besar untuk mengambil kembali aset faksi yang disita."},
+            {title: "Penghitaman Abadi", year: "2017", rating: "7.4", genre: "Dark Fantasy", desc: "Legenda tentang awal mula kegelapan abadi yang menyelimuti wilayah Ngawi ribuan tahun silam."},
+            {title: "13 Bom di Banyumas", year: "TBA", rating: "7.3", genre: "Action Thriller", desc: "Satuan anti-teror berpacu dengan waktu untuk menjinakkan 13 bom di titik vital Banyumas."},
+            {title: "Monyet Ijo Banyumas: Legenda", year: "TBA", rating: "7.2", genre: "Folklore / Mystery", desc: "Penelusuran sejarah tentang entitas primata hijau yang menjadi penjaga hutan larangan."},
+            {title: "Agak Ngawi", year: "2024", rating: "7.2", genre: "Comedy / Slice of Life", desc: "Kisah keseharian pemuda Ngawi yang mencoba peruntungan menjadi content creator."},
+            {title: "BetterCall Fuad", year: "TBA", rating: "7.2", genre: "Black Comedy / Crime", desc: "Fuad mencoba membersihkan namanya setelah terlibat kasus pencucian uang di Barbershop."},
+            {title: "Pengocok: Sang Detektif Ngawi", year: "TBA", rating: "7.1", genre: "Mystery / Neo-noir", desc: "Seorang detektif swasta dengan metode penyelidikan aneh memecahkan kasus hilangnya pomade hitam."},
+            {title: "Jomokerto: Kota Ghaib", year: "2023", rating: "7.1", genre: "Urban Legend / Thriller", desc: "Sekelompok mahasiswa terjebak di sebuah kota yang tidak ada di peta."},
+            {title: "Suki: Asal Usul Tanah Ngawi", year: "2026", rating: "7.1", genre: "Mockumentary / Propaganda", desc: "Versi faksi putih mengenai sejarah kemunculan mereka sebagai pembawa cahaya."},
+            {title: "Pengabdi Amba 1", year: "TBA", rating: "7.0", genre: "Horror", desc: "Keluarga diteror oleh sosok kakek tua yang menuntut janji masa lalu."},
+            {title: "Sekawan Jomok", year: "2024", rating: "6.9", genre: "Comedy / Friendship", desc: "Liburan empat sahabat ke Jomokerto yang berubah kacau karena salah paham warga lokal."},
+            {title: "Kontrak Abadi: Para Jomok", year: "TBA", rating: "6.8", genre: "Drama / Thriller", desc: "Kisah tentang perjanjian mengikat yang harus ditandatangani setiap anggota baru faksi."},
+            {title: "28 Februari: Teror Suki Liar", year: "TBA", rating: "6.7", genre: "Slasher / Horror", desc: "Malam berdarah ketika kelompok bertopeng putih melakukan sweeping besar-besaran."},
+            {title: "Ambavin: Sebelum 7 Hari", year: "2024", rating: "6.7", genre: "Supernatural Thriller", desc: "Seseorang mendapatkan pesan misterius bahwa ia hanya memiliki waktu 7 hari."},
+            {title: "Pabrik Muwani", year: "2025", rating: "6.6", genre: "Gore / Industrial Horror", desc: "Rahasia mengerikan di balik pabrik pengolahan daging yang pekerjanya dilarang keluar."},
+            {title: "Amba In The Cell", year: "2026", rating: "6.5", genre: "Prison / Action", desc: "Amba harus bertahan hidup di penjara keamanan maksimum sambil merencanakan pelarian."},
+            {title: "My Muwani", year: "TBA", rating: "6.5", genre: "Drama / Romance", desc: "Hubungan cinta terlarang antara mandor pabrik dengan buruh di tengah tekanan kerja."},
+            {title: "Adriana: Barbershop Hitam", year: "TBA", rating: "6.4", genre: "Mystery / Drama", desc: "Kejadian aneh yang dialami pelanggan yang mencukur rambut di barbershop Adriana."},
+            {title: "Ambacong 3: Revenge", year: "TBA", rating: "6.4", genre: "Fantasy / Action", desc: "Sang monster Ambacong kembali untuk membalas dendam kepada mereka yang menyegelnya."},
+            {title: "Jangan: Rodok Aku", year: "TBA", rating: "6.3", genre: "Experimental / Drama", desc: "Pencarian jati diri seorang pemuda yang merasa tidak cocok dengan budaya 'Rodok'."},
+            {title: "Imut Adalah Maut", year: "TBA", rating: "6.2", genre: "Horror Thriller", desc: "Sosok Imut kembali untuk menebar teror melalui mimpi."},
+            {title: "Tunggu Aku Di Ngawi", year: "2026", rating: "6.1", genre: "Slow Cinema / Romance", desc: "Penantian panjang seorang wanita di Stasiun Ngawi untuk kekasihnya yang tak kunjung pulang."},
+            {title: "Ambarawuhi: Di Desa Penari", year: "TBA", rating: "6.0", genre: "Folk Horror", desc: "Adaptasi lokal tentang kutukan penari mistis yang menjerat siapa pun yang berani masuk."},
+            {title: "Ambaruwo: Legenda", year: "TBA", rating: "5.8", genre: "Mythical / Adventure", desc: "Pencarian pedang legendaris yang bisa mengalahkan entitas hitam paling kuat."},
+            {title: "Teror: Monyet Ijo", year: "TBA", rating: "5.7", genre: "Action", desc: "Serangan brutal monyet misterius yang meneror pemukiman warga pinggiran Banyumas."},
+            {title: "Desa Jomok", year: "TBA", rating: "5.5", genre: "Mystery", desc: "Seorang jurnalis mengungkap mengapa semua pria di sebuah desa memiliki perilaku seragam."},
+            {title: "Ambalangkung: Main Rodok", year: "TBA", rating: "5.5", genre: "Horror / Comedy", desc: "Permainan memanggil arwah menggunakan alat cukur yang berakhir kekacauan komedi."},
+            {title: "Ambacong Dendam Pocong", year: "TBA", rating: "5.4", genre: "Low-budget Horror", desc: "Pocong yang bangkit kembali karena makamnya terinjak pemuda yang lari dari kejaran Suki."},
+            {title: "Si Imut Jembatan Ngawi", year: "TBA", rating: "5.0", genre: "Urban Horror", desc: "Penampakan sosok putih di jembatan yang mengganggu pengendara motor sendirian."},
+            {title: "Tumbal Jembatan Ngawi", year: "TBA", rating: "4.7", genre: "Slasher", desc: "Pembangunan jembatan yang memerlukan tumbal manusia memicu pembunuhan misterius."},
+            {title: "Abadi Nan Jomok", year: "TBA", rating: "4.2", genre: "Experimental Art", desc: "Film tanpa dialog visualisasi abstrak tentang kehampaan jiwa seorang Jomokers."}
+        ];
+
+        const COMING_SOON = [
+            {title: "Pengabdi Amba 3: Origin", year: "2027", genre: "Period Horror / Origin Story", desc: "Berlatar abad ke-19, mengungkap bagaimana kontrak pertama dengan entitas Amba terbentuk."},
+            {title: "Sekawan Ngawi: Gunung Kwontol", year: "27 Mei 2026", genre: "Comedy / Horror / Adventure", desc: "Empat sekawan mendaki gunung keramat untuk mencari pesugihan, terjebak ritual konyol."}
+        ];
+
+        function getRatingColor(val) {
+            const r = parseFloat(val);
+            if (r >= 8.0) return 'text-[#22c55e]'; // Hijau Gelap/Terang
+            if (r >= 7.0) return 'text-[#84cc16]'; // Hijau Redup
+            if (r >= 6.0) return 'text-[#eab308]'; // Kuning
+            return 'text-[#ef4444]'; // Merah
+        }
+
+        const STAR_SVG = `<svg class="w-4 h-4 star-icon fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>`;
+
+        function init() {
+            const tableBody = document.getElementById('movie-table-body');
+            const featuredGrid = document.getElementById('featured-grid');
+            const csBody = document.getElementById('coming-soon-body');
+
+            MOVIES.forEach(m => {
+                const colorClass = getRatingColor(m.rating);
+
+                if (m.image) {
+                    featuredGrid.innerHTML += `
+                        <div onclick='openDetail(${JSON.stringify(m)})' class="glass-card p-4 flex items-center gap-6 cursor-pointer hover:scale-[1.02] transition-transform group">
+                            <div class="w-24 h-32 rounded-xl overflow-hidden shrink-0 bg-black border border-white/10">
+                                <img src="/static/${m.image}" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">${m.title}</h3>
+                                <p class="text-[10px] text-white/30 uppercase tracking-widest font-bold mt-1">${m.year}</p>
+                                <div class="mt-3 flex items-center gap-1.5 ${colorClass} font-bold text-sm">
+                                    ${STAR_SVG} ${m.rating}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                tableBody.innerHTML += `
+                    <tr onclick='openDetail(${JSON.stringify(m)})' class="table-row-hover group">
+                        <td class="py-6 px-8">
+                            <div class="text-white/60 font-bold group-hover:text-white transition-colors text-base">${m.title}</div>
+                            <div class="text-[9px] uppercase tracking-widest text-white/10 font-bold mt-1">${m.genre}</div>
+                        </td>
+                        <td class="py-6 px-8 text-center text-xs font-mono text-white/20">${m.year}</td>
+                        <td class="py-6 px-8 text-right">
+                            <div class="flex items-center justify-end gap-2 ${colorClass} font-black text-base">
+                                ${STAR_SVG} ${m.rating}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            COMING_SOON.forEach(c => {
+                csBody.innerHTML += `
+                    <tr onclick='openDetail(${JSON.stringify(c)})' class="table-row-hover group">
+                        <td class="py-6 px-8">
+                            <div class="text-white font-bold group-hover:text-blue-400 transition-colors text-lg">${c.title}</div>
+                            <div class="text-[9px] uppercase tracking-widest text-blue-500/40 font-bold mt-1">${c.genre}</div>
+                        </td>
+                        <td class="py-6 px-8 text-right text-sm font-black text-white/40 italic">${c.year}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openDetail(m) {
+            document.getElementById('modal-title').innerText = m.title;
+            document.getElementById('modal-desc').innerText = m.desc;
+            document.getElementById('modal-year').innerText = "Status: " + (m.rating ? "Tayang" : "Akan Rilis") + " / " + m.year;
+            document.getElementById('modal-genre').innerText = m.genre;
+            
+            const r = document.getElementById('modal-rating');
+            const rCont = document.getElementById('modal-rating-container');
+            if(m.rating) {
+                r.innerText = m.rating;
+                r.className = `text-2xl font-black ${getRatingColor(m.rating)}`;
+                rCont.style.display = 'flex';
+            } else {
+                rCont.style.display = 'none';
+            }
+
+            const img = document.getElementById('modal-img');
+            const container = document.getElementById('modal-img-container');
+            if (m.image) {
+                img.src = "/static/" + m.image;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+
+            document.getElementById('detail-overlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('detail-overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onclick = e => { if (e.target.id === 'detail-overlay') closeDetail(); }
+        init();
+    </script>
+</body>
+</html>
+
+```

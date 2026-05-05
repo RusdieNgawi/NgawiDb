@@ -1,0 +1,205 @@
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NgawiDb — Studio Digital Heritage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --border: rgba(255, 255, 255, 0.08);
+            --accent: #ffffff;
+        }
+        body {
+            background-color: var(--bg);
+            color: #888;
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; color: #fff; }
+        
+        .glass-hero {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 48px;
+        }
+
+        .table-row-hover:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .table-row-hover:hover .movie-title {
+            color: #fff;
+        }
+
+        .poster-glow {
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            padding: 5px 14px;
+            border-radius: 100px;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .intro-text {
+            line-height: 1.8;
+            letter-spacing: 0.02em;
+        }
+
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-white selection:text-black">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 py-10 px-12 flex justify-between items-center bg-gradient-to-b from-[#050505] to-transparent pointer-events-none">
+        <div class="text-xs font-bold tracking-[0.5em] text-white pointer-events-auto">NGAWIDB<span class="text-white/20">.STUDIO</span></div>
+        <div class="hidden md:flex gap-12 text-[9px] font-bold tracking-[4px] uppercase pointer-events-auto">
+            <a href="#archives" class="hover:text-white transition-colors">Arsip</a>
+            <a href="#coming" class="hover:text-white transition-colors">Segera</a>
+        </div>
+    </nav>
+
+    <!-- Intro Section -->
+    <header class="min-h-[70vh] flex flex-col justify-center px-12 pt-40">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Diubah dari Otentikasi Sinema menjadi NgawiDb -->
+            <h1 class="text-5xl md:text-8xl font-bold tracking-tighter mb-10 italic">NgawiDb</h1>
+            <p class="intro-text text-lg md:text-xl text-white/40 font-light max-w-2xl mx-auto">
+                <span class="text-white font-normal">NgawiDb</span> adalah pusat dokumentasi digital yang didedikasikan untuk melestarikan karya visual paling berani dari tanah Ngawi. Kami mengkurasi narasi, sejarah, dan fenomena sinematik yang mendefinisikan identitas faksi dalam bentuk arsip metadata yang komprehensif.
+            </p>
+            <div class="mt-12 flex justify-center items-center gap-4 text-[10px] tracking-[4px] uppercase font-bold text-white/20">
+                <span>Database Terpadu</span>
+                <div class="w-2 h-2 rounded-full bg-white/10"></div>
+                <span>Edisi 2025</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="section-divider"></div>
+
+    <!-- Featured Section -->
+    <section class="px-12 py-32">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16">
+            
+            <!-- Poster 1: Ladesh -->
+            <div class="glass-hero p-12 flex flex-col md:flex-row gap-12 transition-all hover:border-white/20">
+                <div class="w-full md:w-60 shrink-0 shadow-2xl rounded-3xl overflow-hidden poster-glow">
+                    <img src="/static/1000168964.png" alt="Ladesh" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div class="badge w-fit mb-8">Katalog Utama / 2025</div>
+                    <h2 class="text-3xl font-bold mb-4 italic">Ladesh: Suami dari Masa Depan</h2>
+                    <p class="text-xs leading-relaxed text-white/30 italic mb-10">Seorang pria dari masa depan kembali ke Ngawi tahun 2025 untuk mencegah pernikahan yang akan menghancurkan tatanan dunia.</p>
+                    <div class="flex items-center gap-6">
+                        <span class="text-2xl font-light text-white">8.2</span>
+                        <div class="h-px w-10 bg-white/20"></div>
+                        <span class="text-[9px] uppercase tracking-[3px] font-bold text-white/40">Sci-Fi Drama</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Poster 2: Kehitaman -->
+            <div class="glass-hero p-12 flex flex-col md:flex-row gap-12 transition-all hover:border-white/20">
+                <div class="w-full md:w-60 shrink-0 shadow-2xl rounded-3xl overflow-hidden poster-glow">
+                    <img src="/static/1000168965.png" alt="Kehitaman" class="w-full h-full object-cover">
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div class="badge w-fit mb-8">Katalog Utama / 2025</div>
+                    <h2 class="text-3xl font-bold mb-4 italic">Kehitaman: The Verdict</h2>
+                    <p class="text-xs leading-relaxed text-white/30 italic mb-10">Perdebatan sengit di meja hijau mengenai hak asasi para penganut aliran "Hitam" di mata hukum negara.</p>
+                    <div class="flex items-center gap-6">
+                        <span class="text-2xl font-light text-white">7.5</span>
+                        <div class="h-px w-10 bg-white/20"></div>
+                        <span class="text-[9px] uppercase tracking-[3px] font-bold text-white/40">Legal Drama</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Catalogue Table -->
+    <section id="archives" class="px-12 py-40 bg-[#070707]">
+        <div class="max-w-7xl mx-auto">
+            <div class="mb-24 flex flex-col md:flex-row justify-between items-end gap-10">
+                <div>
+                    <!-- Diubah dari Indeks Sinematik menjadi Tabel List -->
+                    <h2 class="text-6xl font-bold tracking-tighter mb-6 italic">Tabel List.</h2>
+                    <p class="text-white/10 tracking-[5px] uppercase text-[10px] font-bold">Total Entri: 42 Film Terverifikasi</p>
+                </div>
+                <div class="h-px bg-white/5 flex-1 mx-20 hidden lg:block mb-4"></div>
+            </div>
+
+            <div class="border-t border-white/5">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-[9px] uppercase tracking-[4px] text-white/20">
+                            <th class="py-12 font-bold text-left">Judul Karya</th>
+                            <th class="py-12 font-bold text-left hidden md:table-cell">Narasi & Deskripsi</th>
+                            <th class="py-12 font-bold text-center">Tahun</th>
+                            <th class="py-12 font-bold text-right">Skor</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/5">
+                        {% for movie in tayang %}
+                        <tr class="table-row-hover transition-all duration-500">
+                            <td class="py-14 pr-8 align-top">
+                                <div class="movie-title text-xl font-bold text-white/70 mb-3 transition-colors">{{ movie.title }}</div>
+                                <div class="text-[9px] uppercase tracking-[2px] text-white/20 font-bold italic">{{ movie.genre }}</div>
+                            </td>
+                            <td class="py-14 px-8 align-top hidden md:table-cell">
+                                <p class="text-xs leading-relaxed max-w-lg text-white/30 font-light italic">{{ movie.desc }}</p>
+                            </td>
+                            <td class="py-14 px-8 align-top text-center text-xs font-light text-white/20">
+                                {{ movie.year }}
+                            </td>
+                            <td class="py-14 pl-8 align-top text-right">
+                                <span class="text-lg font-light text-white/60 tracking-tighter">{{ movie.rating }}</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section id="coming" class="px-12 py-40 border-t border-white/5">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-[10px] uppercase tracking-[6px] mb-24 text-white/10 font-bold">Agenda Produksi / Mendatang</h2>
+            <div class="grid md:grid-cols-2 gap-24">
+                {% for movie in coming %}
+                <div class="group border-l-2 border-white/5 pl-12 py-6 hover:border-white transition-all duration-700">
+                    <div class="text-[10px] font-bold text-white/20 mb-6 uppercase tracking-[4px]">Estimasi / {{ movie.year }}</div>
+                    <h3 class="text-4xl font-bold mb-6 italic group-hover:pl-4 transition-all duration-500">{{ movie.title }}</h3>
+                    <p class="text-sm text-white/30 italic mb-10 max-w-md leading-relaxed font-light">{{ movie.desc }}</p>
+                    <span class="badge italic text-white/40">G: {{ movie.genre }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-32 text-center border-t border-white/5">
+        <div class="text-xs font-bold tracking-[8px] text-white/5 uppercase mb-4">NGAWIDB.STUDIO</div>
+        <p class="text-[9px] tracking-[4px] text-white/10 uppercase font-light">Digital Film Heritage Archive &copy; 2025</p>
+    </footer>
+
+</body>
+</html>
+
+```

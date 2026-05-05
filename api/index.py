@@ -2,13 +2,16 @@
 from flask import Flask, render_template, send_from_directory
 import os
 
-# Inisialisasi Flask
-# Vercel akan otomatis mengenali variabel 'app'
-app = Flask(__name__, 
-            static_folder='static', 
-            template_folder='.')
+# Mengatur path agar Flask bisa menemukan index.html di root folder
+# meskipun file ini berada di dalam folder api/
+base_dir = os.path.abspath(os.path.dirname(__file__))
+root_dir = os.path.dirname(base_dir)
 
-# Data Film
+app = Flask(__name__, 
+            static_folder=os.path.join(root_dir, 'static'), 
+            template_folder=root_dir)
+
+# Data film untuk ditampilkan di index.html
 MOVIES = [
     { 
         "id": "ladesh-2025", 
@@ -37,13 +40,14 @@ KATALOG = [
 
 @app.route('/')
 def index():
+    # Flask sekarang akan mencari index.html di root folder (..)
     return render_template('index.html', featured=MOVIES, catalog=KATALOG)
 
-# Rute statis tambahan untuk memastikan poster muncul
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
 
+# Untuk keperluan testing lokal
 if __name__ == '__main__':
     app.run(debug=True)
 

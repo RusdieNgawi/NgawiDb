@@ -2,16 +2,16 @@
 from flask import Flask, render_template, send_from_directory
 import os
 
-# Mengatur path agar Flask bisa menemukan index.html di root folder
-# meskipun file ini berada di dalam folder api/
-base_dir = os.path.abspath(os.path.dirname(__file__))
+# Konfigurasi path agar aman di serverless environment (Vercel)
+# Kita tentukan folder templates dan static secara eksplisit
+base_dir = os.path.dirname(os.path.abspath(__file__))
+# Naik satu level ke root
 root_dir = os.path.dirname(base_dir)
 
 app = Flask(__name__, 
-            static_folder=os.path.join(root_dir, 'static'), 
-            template_folder=root_dir)
+            template_folder=os.path.join(root_dir, 'templates'),
+            static_folder=os.path.join(root_dir, 'static'))
 
-# Data film untuk ditampilkan di index.html
 MOVIES = [
     { 
         "id": "ladesh-2025", 
@@ -19,7 +19,7 @@ MOVIES = [
         "year": "2025", 
         "genre": "Sci-Fi / Drama Romantis", 
         "image": "1000168964.png", 
-        "description": "Seorang pria dari masa depan kembali ke Ngawi tahun 2025 untuk mencegah pernikahan yang akan menghancurkan tatanan dunia." 
+        "description": "Seorang pria dari masa depan kembali ke Ngawi tahun 2025 untuk mencegah pernikahan." 
     },
     { 
         "id": "kehitaman-2025", 
@@ -27,28 +27,26 @@ MOVIES = [
         "year": "2025", 
         "genre": "Legal Drama", 
         "image": "1000168965.png", 
-        "description": "Perdebatan sengit di meja hijau mengenai hak asasi para penganut aliran 'Hitam' di mata hukum negara." 
+        "description": "Perdebatan sengit mengenai hak asasi faksi 'Hitam' di mata hukum." 
     }
 ]
 
 KATALOG = [
     {"id": "pesukian-2026", "title": "Jangan Bawa Aku!: Pesukian Massal", "year": "2026", "genre": "Tragedi / Horror", "rating": "8.1"},
-    {"id": "500days-2009", "title": "(500) Days Of Imut", "year": "2009", "genre": "Romance / Coming-of-Age", "rating": "8.0"},
-    {"id": "zonahitam-2026", "title": "Zona Hitam", "year": "2026", "genre": "Action / Survival Horror", "rating": "7.9"},
-    {"id": "jomokerto-2023", "title": "Jomokerto: Kota Ghaib", "year": "2023", "genre": "Urban Legend", "rating": "7.1"}
+    {"id": "500days-2009", "title": "(500) Days Of Imut", "year": "2009", "genre": "Romance", "rating": "8.0"}
 ]
 
 @app.route('/')
 def index():
-    # Flask sekarang akan mencari index.html di root folder (..)
+    # Mencari index.html di folder /templates
     return render_template('index.html', featured=MOVIES, catalog=KATALOG)
 
+# Route untuk melayani file gambar dari folder /static
 @app.route('/static/<path:filename>')
 def serve_static(filename):
     return send_from_directory(app.static_folder, filename)
 
-# Untuk keperluan testing lokal
-if __name__ == '__main__':
-    app.run(debug=True)
+# Diperlukan untuk Vercel agar mengenali variabel app
+app = app
 
 ```
